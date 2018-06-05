@@ -1,0 +1,35 @@
+{
+  "name": "vuex-demo",
+  "version": "1.0.0",
+  "description": "This is a simple introduction to the introduction of vuex. This article focuses on the basic syntax and simple use of vuex, as well as the transfer values between modules, and the advantages and disadvantages of the implementation of the technical scheme",
+  "main": "main.js",
+  "scripts": {
+    "start": "webpack-dev-server --config ./build/webpack.dev.conf.js",
+    "build": "webpack --config ./build/webpack.dev.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vue-resource/vuex-demo.git"
+  },
+  "keywords": [
+    "vuex",
+    "modules",
+    "state",
+    "actions",
+    "getters",
+    "mutations"
+  ],
+  "author": "henyulee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vue-resource/vuex-demo/issues"
+  },
+  "homepage": "https://github.com/vue-resource/vuex-demo#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^3.0.1",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
