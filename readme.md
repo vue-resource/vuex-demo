@@ -4,19 +4,20 @@ This is a program based on elementUI style.In this program,you will view the usa
 
 ## About starting
 You can run this program like the following steps:
-- Install dependency
+- Install dependency<br/>
 	npm install 
 
-- Startup project
+- Startup project<br/>
 	npm run start / npm start 
 
-- Pack
+- Pack<br/>
 	npm run build
 
 ## About Configing
 
 ### webpack 
-There are a lot of details about webpack.you can find something expected by moving [here](https://segmentfault.com/a/1190000012536871)
+There are a lot of details about webpack.you can find something expected by moving [here](https://segmentfault.com/a/1190000012536871)<br/>
+Detailed configuration details, reference:【webpack.config.js】
 
 #### webpack-dev-server 
 You can do something like flowing in webpack.config.js.
@@ -32,8 +33,23 @@ devServer: {
   compress:true //压缩
 }
 ```
+#### plugins
+The function of plugins is different from that of modules. Modules are designed to import non-Es5 format JS or other resource type files, and customize(定制) some loaders. Plugins process the final package files. You can also understand that loader is preparing for packaging, plugin is packaged and processed.<br/>
+If you want to know the detailed usage of plugins, you can visit the [NPM](https://www.npmjs.com/) official website.
 
-#### html-webpack-plugin
+##### webpack.BannerPlugin
+This is a built-in plugin for webpack,usually used to add annotations to the header of the file after packaging
+
+##### uglifyjs-webpack-plugin
+Usually uesed to narrow the code
+
+##### extract-text-webpack-plugin
+Used to extract(提取) public CSS files
+
+##### copy-webpack-plugin
+Copy files and folders in webpack
+
+##### html-webpack-plugin
 The home page is usually a HTML file.By using HtmlWebpackPlugin, the home page can be generated.<br/>
 You should do something like flowing in webpack.config.js.
 ```
@@ -228,11 +244,36 @@ module:{
 }
 
 ```
+### Loader
+
+#### [file-loader](https://www.npmjs.com/package/file-loader) && [html-loader](https://www.npmjs.com/package/html-loader)
+[![file-loader]](https://segmentfault.com/a/1190000012536871)  
+[file-loader]:https://github.com/vue-resource/vuex-demo/blob/master/static/image/file-loader.png "file-loader"  
+![](https://github.com/vue-resource/vuex-demo/blob/master/static/image/html-loader.png) 
+
+####  
 
 ## Other related
 
 ### How to generate a readme.md
 if you want to know something about MD,you can move here. [markdown](https://blog.csdn.net/kaitiren/article/details/38513715)
+
+### How to use postcss
+visit [here](https://www.cnblogs.com/camille666/p/postcss_precss.html)<br>div></div>
+[postcss插件池](https://www.cnblogs.com/terrylin/p/5229169.html)
+
+### cssnext
+It allows you to use future CSS4 grammar.visit [cssnext](https://www.cnblogs.com/camille666/p/postcss_cssnext_css4.html)<br/>
+[W3C](https://www.w3cplus.com/css4/6-preprocessor-features-coming-to-native-CSS.html) ****推荐****
+
+### Problems encountered
+
+1、Cannot find module 'array-includes'
+
+ TODO：把node_modules删除，重新cnpm install
+
+2、You may need an appropriate loader to handle this file type  ==> 单独引入css文件
+ TODO：配置style-loader,css-loader，顺序不要反
 
 
 

@@ -1,0 +1,13 @@
+:root{
+	/* 定义基本颜色 */
+	--color-info:#909399;
+	--color-blue:#409EFF;
+	--color-success:#67C23A;
+	--color-danger:#F56C6C;
+	--color-warning:#E6A23C;
+	--color-dark-main:#303133;
+	--color-dark-convent:#606266;
+	--color-dark-secondary:#909399;
+	--color-dark-commonly:#C0C4CC;
+	/*  */
+}

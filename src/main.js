@@ -1,1 +1,3 @@
-alert(11)
+
+import '%/index'
+
