@@ -1,6 +1,9 @@
 const webpack = require('webpack')
 const path = require("path")
 
+// 针对webpack4版本打的补丁
+const VueLouterPlugin = require('vue-loader/lib/plugin')
+
 // webpack 本身的插件使用  new webpack[插件名](配置项)
 // 可以通过console.log(webpack) 查看所有内置的插件
 // webpack.BannerPlugin   在打包的文件中添加注释
@@ -8,7 +11,7 @@ const path = require("path")
 // 第三方的webpack插件使用 new [插件名](配置项)  
 const HtmlWebpackPlugin = require("html-webpack-plugin") // 生成html页
 const UglifyjsWebpackPlugin = require("uglifyjs-webpack-plugin") // 代码缩小
-const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin") //提取公共css
+const ExtractTextPlugin = require("extract-text-webpack-plugin") //提取公共css
 // const CopyWebpackPlugin = require("copy-webpack-plugin")// 在webpack中拷贝文件和文件夹
 
 // template 一旦被配置，则filename的配置自动失效
@@ -75,11 +78,60 @@ module.exports = {
   // 模块
   module:{
   	rules:[
-  		{ //配置html-loader
+  		// {   // eslint规范代码
+	    //     test: /\.js$/, // 对js文件使用eslint来检查代码的规范
+	    //     loader: 'eslint-loader',
+	    //     enforce: 'pre', // 但为了保险，建议单独给eslint-loader指定pre值，有关loader的优先级，参考https://webpack.js.org/configuration/module/#rule-enforce
+	    //     include: [path.resolve('src')], // 只有些目录下的js文件才使用eslint-loader
+	    //     options: {}
+	    // },
+	    { // 借助babel使js语法被各个浏览器接收
+	      test: /\.js$/,
+	      exclude: /node_modules/,
+	      loader: "babel-loader",
+	    },{   // 识别vue组件
+  			test:/\.vue$/,
+  			loader:'vue-loader',
+  			options: {
+  				// 把vue组件的style样式提取到公共的文件
+  				extractCSS: function(){
+                   return extractLESS
+                }
+  			}
+  		},{ // 对图片进行base64编码
+	        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+	        loader: 'url-loader',
+	        options: {
+	          // 最后生成的文件名是 output.path+ outputPaht+ name，    [name],[ext],[path]表示原来的文件名字，扩展名，路径
+	          limit: 200, // 图片小于200kb的时候，采用base64编码，减少请求次数
+	          outputPath: 'static/images/',
+	          name: '[name].[hash:10].[ext]' //最后生成的图片完整路径是 output.path+ outputPath+name
+	        }
+	    },{ //配置file-loader
+  			test:/\.(png|jpe?g|gif|svg)(\?.*)?$/,
+  			use:{
+  				loader:'file-loader',
+  				options:{
+  					// 最后生成的文件名是 output.path+ outputPaht+ name，    [name],[ext],[path]表示原来的文件名字，扩展名，路径
+  					name:'[name][hash:10].[ext]',
+  					outputPath:"static/images/" // 【后面的/不能少】
+  				}
+  			}
+  		},{
+  			test:/\.css$/,
+  			use:['style-loader','css-loader']
+  			// 只有导入的css文件单单独存在一个文件中，vue组件中的less等文件归到了style中了，
+  			//  如果想要打包到一块，参考：https://vue-loader-v14.vuejs.org/zh-cn/options.html#extractcss
+  			// use:ExtractTextPlugin.extract({ 
+	        //   fallback: 'style-loader',
+	        //   use: 'css-loader'
+	        // })
+  		},{ //配置 html-loader
   			test:/\.html$/,
   			use:{
   				loader:'html-loader',
   				options:{
+  					// attrs中的配置与模板中data属性一致时，会以require()的方式导入图片，模板中没有设置相应data属性的图片，html-loader忽略，不当作模块加载
   					attrs:[":data-src"], //指定引用本地静态路径的属性名
   					removeComments:true, // 移除注释
   					collapseWhitespace:true, //合并空白符
@@ -90,20 +142,10 @@ module.exports = {
   					removeStyleTypeAttributes:false // 移除style标签属性
   				}
   			}
-  		},{ //配置file-loader
-  			test:/\.(jpg|jpeg|png|gif)$/,
-  			use:{
-  				loader:'file-loader',
-  				options:{
-  					// 最后生成的文件名是 output.path+ outputPaht+ name，    [name],[ext],[path]表示原来的文件名字，扩展名，路径
-  					name:'[name][hash].[ext]',
-  					outputPath:"static/images/" // 【后面的/不能少】
-  				}
-  			}
-  		},{
-  			test:/\.css$/,
-  			use:['style-loader','css-loader']
   		}
+  		// 04----音频视频
+
+      	// 05----字体
   	]
   },
 
@@ -113,6 +155,7 @@ module.exports = {
   	// 寻找顺序从左到右
   	extensions:['.js', '.vue', '.css', '.json'], 
   	alias:{
+  		// 抽空可以了解一下vue官网上几种vue文件的格式
   		'vue$': 'vue/dist/vue.esm.js', // 这是一个正则的写法，表示以vue结尾的，如import Vue from 'vue' 表示 import Vue from 'vue/dist/vue.esm.js'
   		'@': path.resolve('src'),// 这也是为懒人服务的,import HelloWorld from '@/components/HelloWorld'这里的@其实就是代表src这个目录 
         '#': path.resolve('src/components'), // import Table from '#/table'
@@ -124,8 +167,12 @@ module.exports = {
   plugins:[
   	new HtmlWebpackPlugin(HtmlWebpackPluginConfig),
   	new UglifyjsWebpackPlugin(),
-    new webpack.BannerPlugin({banner:"狼行千里吃肉，狗行千里吃屎！活鱼逆流而上，死鱼随波逐流"})
-    //new ExtractTextWebpackPlugin('style.css')
+    new webpack.BannerPlugin({banner:"狼行千里吃肉，狗行千里吃屎！活鱼逆流而上，死鱼随波逐流"}),
+    //new ExtractTextPlugin('styles.css')
+    
+    // 针对webpack4打的补丁
+    new VueLouterPlugin()
+    
   ],
 
   // 开发服务器

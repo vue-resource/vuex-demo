@@ -9,5 +9,25 @@
 	--color-dark-convent:#606266;
 	--color-dark-secondary:#909399;
 	--color-dark-commonly:#C0C4CC;
+	/* 字体 */
+	--font-family-base:"Microsoft YaHei"; 
+	--font-size-base:12px;
+	--font-size-medium:14px;
+	--font-size-big:16px;
+	--font-weight-base:300;
+	--font-weight-bold:bold;
+	--font-weight-bold:bolder;
+	--font-lh-base:1;
+	--font-lh-normal:1.5;
+	/* 边框 */
+	--border-type-default:solid;
+	--boder-size-default:20px;
+	--border-color-default:#ccc;
+	--border-default:{
+		border:var(--border-size-default) var(--border-size-default) var(--border-color-default) 
+	};
+	--border-bottom-default:{
+		border-bottom:var(--border-size-default) var(--border-size-default) var(--border-color-default) 
+	};
 	/*  */
 }

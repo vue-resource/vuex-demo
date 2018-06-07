@@ -246,12 +246,30 @@ module:{
 ```
 ### Loader
 
-#### [file-loader](https://www.npmjs.com/package/file-loader) && [html-loader](https://www.npmjs.com/package/html-loader)
+#### [file-loader](https://www.npmjs.com/package/file-loader)
 [![file-loader]](https://segmentfault.com/a/1190000012536871)  
 [file-loader]:https://github.com/vue-resource/vuex-demo/blob/master/static/image/file-loader.png "file-loader"  
 ![](https://github.com/vue-resource/vuex-demo/blob/master/static/image/html-loader.png) 
 
-####  
+#### [html-loader](https://www.npmjs.com/package/html-loader)
+
+
+#### [vue-loader](https://www.npmjs.com/package/vue-loader)
+
+####  vue-template-compiler //编译vue模板
+
+#### [url-loader](https://www.npmjs.com/package/url-loader)
+Function:对将图片|视频音频|字体进行base64编码，它有一个参数limit来决定是否要将文件进行base64编码，当不用编码时，就调用file-loader进行后续处理<br/>
+当没有设limit选项，或设了limit时但图片的大小小于limit，这两种情况才会将图片转为base64数据，不满足这两个条件，图片还是使用file-loader来处理
+```
+// 下面是webpack的一个很有用的功能，将图片当作模块直接require，如果没有安装url-loader会报语法错
+//下面代码放在 D:\03www2018\study\webpack2018\today\wang\home.js
+//logo.jpg放在 D:\03www2018\study\webpack2018\today\images/logo.jpg  
+var imgUrl = require('../images/logo.jpg'),
+document.body.innerHTML = '<img src="'+imgUrl+'" />';
+```
+
+
 
 ## Other related
 
@@ -274,6 +292,9 @@ It allows you to use future CSS4 grammar.visit [cssnext](https://www.cnblogs.com
 
 2、You may need an appropriate loader to handle this file type  ==> 单独引入css文件
  TODO：配置style-loader,css-loader，顺序不要反
+
+3、vue-loader was used without the corresponding plugin. Make sure to include VueLoaderPlugin in your webpack config
+TODO:这是webpack版本引起的问题，可以参考[解决方案](https://www.imooc.com/qadetail/260262?t=420578)
 
 
 
