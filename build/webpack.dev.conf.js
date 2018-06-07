@@ -78,13 +78,13 @@ module.exports = {
   // 模块
   module:{
   	rules:[
-  		// {   // eslint规范代码
-	    //     test: /\.js$/, // 对js文件使用eslint来检查代码的规范
-	    //     loader: 'eslint-loader',
-	    //     enforce: 'pre', // 但为了保险，建议单独给eslint-loader指定pre值，有关loader的优先级，参考https://webpack.js.org/configuration/module/#rule-enforce
-	    //     include: [path.resolve('src')], // 只有些目录下的js文件才使用eslint-loader
-	    //     options: {}
-	    // },
+  		{   // eslint规范代码
+	        test: /\.js$/, // 对js文件使用eslint来检查代码的规范
+	        loader: 'eslint-loader',
+	        enforce: 'pre', // 但为了保险，建议单独给eslint-loader指定pre值，有关loader的优先级，参考https://webpack.js.org/configuration/module/#rule-enforce
+	        include: [path.resolve('src')], // 只有些目录下的js文件才使用eslint-loader
+	        options: {}
+	    },
 	    { // 借助babel使js语法被各个浏览器接收
 	      test: /\.js$/,
 	      exclude: /node_modules/,
@@ -119,13 +119,13 @@ module.exports = {
   			}
   		},{
   			test:/\.css$/,
-  			use:['style-loader','css-loader']
+  			//use:['style-loader','css-loader']
   			// 只有导入的css文件单单独存在一个文件中，vue组件中的less等文件归到了style中了，
   			//  如果想要打包到一块，参考：https://vue-loader-v14.vuejs.org/zh-cn/options.html#extractcss
-  			// use:ExtractTextPlugin.extract({ 
-	        //   fallback: 'style-loader',
-	        //   use: 'css-loader'
-	        // })
+  			use:ExtractTextPlugin.extract({ 
+	          fallback: 'style-loader',
+	          use: 'css-loader'
+	        })
   		},{ //配置 html-loader
   			test:/\.html$/,
   			use:{
@@ -168,7 +168,7 @@ module.exports = {
   	new HtmlWebpackPlugin(HtmlWebpackPluginConfig),
   	new UglifyjsWebpackPlugin(),
     new webpack.BannerPlugin({banner:"狼行千里吃肉，狗行千里吃屎！活鱼逆流而上，死鱼随波逐流"}),
-    //new ExtractTextPlugin('styles.css')
+    new ExtractTextPlugin('styles.css'),
     
     // 针对webpack4打的补丁
     new VueLouterPlugin()

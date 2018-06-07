@@ -276,6 +276,9 @@ document.body.innerHTML = '<img src="'+imgUrl+'" />';
 ### How to generate a readme.md
 if you want to know something about MD,you can move here. [markdown](https://blog.csdn.net/kaitiren/article/details/38513715)
 
+### .babelrc 
+各个参数介绍，[参考](https://www.cnblogs.com/ye-hcj/p/7071850.html)
+
 ### How to use postcss
 visit [here](https://www.cnblogs.com/camille666/p/postcss_precss.html)<br>div></div>
 [postcss插件池](https://www.cnblogs.com/terrylin/p/5229169.html)
@@ -295,6 +298,25 @@ It allows you to use future CSS4 grammar.visit [cssnext](https://www.cnblogs.com
 
 3、vue-loader was used without the corresponding plugin. Make sure to include VueLoaderPlugin in your webpack config
 TODO:这是webpack版本引起的问题，可以参考[解决方案](https://www.imooc.com/qadetail/260262?t=420578)
+
+4、webpack使用extract-text-webpack-plugin打包时提示错误Use Chunks.groupsIterable and filter by instanceof Entryp
+这是webpack4版本引起的问题 <br/>
+TODO: npm install --save-dev extract-text-webpack-plugin@next 
+
+5、Do not use 'new' for side effects 
+TODO1:在.eslintrc.js文件中添加规则`'no-new':'off'`<br/>
+TODO2:
+```
+let vm = new Vue({   
+    el: '#app',  
+    render: h => h(App)
+})
+Vue.use({  
+    vm
+})
+```
+	
+
 
 
 
