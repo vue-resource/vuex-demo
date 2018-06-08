@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		hello world
+		<span class="color-primary">CSS4,预见未来</span>
 	</div>
 </template>
 

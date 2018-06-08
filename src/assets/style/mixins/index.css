@@ -1,7 +1,7 @@
 :root{
 	/* 定义基本颜色 */
 	--color-info:#909399;
-	--color-blue:#409EFF;
+	--color-primary:#409EFF;
 	--color-success:#67C23A;
 	--color-danger:#F56C6C;
 	--color-warning:#E6A23C;

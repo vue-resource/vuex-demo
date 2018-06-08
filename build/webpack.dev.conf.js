@@ -168,7 +168,7 @@ module.exports = {
   	new HtmlWebpackPlugin(HtmlWebpackPluginConfig),
   	new UglifyjsWebpackPlugin(),
     new webpack.BannerPlugin({banner:"狼行千里吃肉，狗行千里吃屎！活鱼逆流而上，死鱼随波逐流"}),
-    new ExtractTextPlugin('styles.css'),
+    new ExtractTextPlugin('./static/css/[name][hash:10].css'),
     
     // 针对webpack4打的补丁
     new VueLouterPlugin()
