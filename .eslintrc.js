@@ -23,8 +23,15 @@ module.exports = {
   rules: {
     // allow async-await
     'generator-star-spacing': 'off',
+    'no-multiple-empty-lines': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-new':'off'
+    'no-new':'off',
+    'eol-last':'off',
+    'no-console': 'off',
+    'key-spacing': 'error', //在键值前保留空格
+    'indent': [ 'error', 2 ], // 2个空格缩进
+    'quotes': [ 'error', 'single' ], //单引号
+    'no-unused-vars': 'error' //关闭变量定义了未使用
   }
 }

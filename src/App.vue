@@ -1,11 +1,18 @@
 <template>
 	<div id="app">
-		<span class="color-primary">CSS4,预见未来</span>
+		<transition name="fade" mode="out-in">
+			<router-view></router-view>
+		</transition>
 	</div>
 </template>
 
 <script type="text/javascript">
-	export default {
-		name:"app"
-	}
+  export default {
+    name: "app"
+  }
 </script>
+
+<style>
+  @import "../node_modules/element-ui/lib/theme-chalk/index";
+  @import './assets/style/index';
+</style>

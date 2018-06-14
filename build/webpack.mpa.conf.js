@@ -1,5 +1,8 @@
+/** 以下配置适合单文件入口的配置  */
+
 const webpack = require('webpack')
 const path = require("path")
+const glob = require('glob') // 能够用通配符来取到所有的文件,搜索文件用
 
 // 针对webpack4版本打的补丁
 const VueLouterPlugin = require('vue-loader/lib/plugin')
@@ -12,18 +15,7 @@ const VueLouterPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require("html-webpack-plugin") // 生成html页
 const UglifyjsWebpackPlugin = require("uglifyjs-webpack-plugin") // 代码缩小
 const ExtractTextPlugin = require("extract-text-webpack-plugin") //提取公共css
-// const CopyWebpackPlugin = require("copy-webpack-plugin")// 在webpack中拷贝文件和文件夹
-
-// template 一旦被配置，则filename的配置自动失效
-const HtmlWebpackPluginConfig = {
-	title:"Vuex-demo", // html5文件中<title>部分
-	// 生成的文件地址：output.path+ filename
-	filename:'home.html',// 默认是index.html，服务器中设置的首页是index.html，如果这里改成其它名字，那么devServer.index改为和它一样，最终完整文件路径是output.path+filename，如果filename中有子文件夹形式，如`./ab/cd/front.html`，只取`./front.html`
-	// 模板文件地址：context+template是最后模板的完整路径，./不能少,path.resolve(context, template)
-	// template:'./index.html',
-	template:path.join(__dirname,'../index.html'), // //如果觉得插件默认生成的hmtl5文件不合要求，可以指定一个模板，模板文件如果不存在，会报错，默认是在项目根目录下找模板文件，才模板为样板，将打包的js文件注入到body结尾处
-	inject:true // true|body|head|false，四种值，默认为true,true和body相同,是将js注入到body结束标签前,head将打包的js文件放在head结束前,false是不注入，这时得要手工在html中加js
-}
+const CopyWebpackPlugin = require("copy-webpack-plugin")// 在webpack中拷贝文件和文件夹
 
 // console.log(path.resolve('src')) // C:\Users\Administrator\Desktop\vuex-demo\src
 
@@ -39,14 +31,58 @@ const HtmlWebpackPluginConfig = {
 // console.log(path.join(__dirname,'./dist')) //C:\Users\Administrator\Desktop\vuex-demo\build\dist
 // console.log(path.join(__dirname,'../dist')) // C:\Users\Administrator\Desktop\vuex-demo\dist
 
+/* 下边是动态获取入口文件的操作 （多入口文件） */
+// 公共虚拟首页配置
+let moduleIndex = []
+
+
+// 各入口文件的打包
+  const modulePath = glob.sync('src/page/*/index.js') // [ 'src/page/pageone/index.js', 'src/page/pagetwo/index.js' ]
+  const moduleEntryConfig = () => {
+  	let entryConfig = {}
+  	modulePath.forEach(item => {
+  		let name = /.*\/(page\/.*?\/index)\.js/.exec(item)[1];//得到 page/pageone/index 这样的文件名
+  		entryConfig[name] = item
+
+  		let plug =  new HtmlWebpackPlugin({
+			// 生成的文件地址：output.path+ filename
+			filename: path.join('./'+name +'.html'),// 默认是index.html，服务器中设置的首页是index.html，如果这里改成其它名字，那么devServer.index改为和它一样，最终完整文件路径是output.path+filename，如果filename中有子文件夹形式，如`./ab/cd/front.html`，只取`./front.html`
+			// 模板文件地址：context+template是最后模板的完整路径，./不能少,path.resolve(context, template)
+			// template:'./index.html',
+			template: path.resolve(__dirname, '../index.html'), // //如果觉得插件默认生成的hmtl5文件不合要求，可以指定一个模板，模板文件如果不存在，会报错，默认是在项目根目录下找模板文件，才模板为样板，将打包的js文件注入到body结尾处
+			inject:true, // true|body|head|false，四种值，默认为true,true和body相同,是将js注入到body结束标签前,head将打包的js文件放在head结束前,false是不注入，这时得要手工在html中加js
+			chunks: ['vendor', name, 'components']
+	    });
+    	moduleIndex.push(plug);
+  	})
+  	return entryConfig
+  }
+// 第三方库的打包，如vue-router,elementUI...
+  const pluginEntryConfig = {
+  	'vendor':['vue','vue-router','element-ui/lib/','src/plugins/jquery.js']
+  }
+// 公共组件的打包
+  const componentsPath = glob.sync('src/components/**/*.vue')
+  const componentsEntryConfig = {
+  	'components':componentsPath
+  }
+// 最终的打包配置
+const entryConfig = {...moduleEntryConfig(),...pluginEntryConfig,...componentsEntryConfig}
+
+console.log(entryConfig)
+
+/* 打包配置结束 */
+
 module.exports = {
   // 上下文是查找入口文件的基本目录,如果不设，默认为当前目录   与命令行中的 webpack --context是一样的
   // context 除了这里的入口文件用到，象很多【loader,plugin】都会要用到这个值
-  context: path.resolve('src'),
+  //context: path.resolve('src'),
 
   // entry可以为字符串|对象|数组三种形式
   // 字符串，适合spa,也就是单页网页，如手机网页,即：只有一个入口文件  
-  entry:'./main.js', // 最后入口文件是 context + entry,   【前面./不能少】
+  entry:{
+  	...entryConfig
+  }, // 最后入口文件是 context + entry,   【前面./不能少】
   // 数组 适合多页面应用
   // entry:['./main'],
   // 对象 适合于多入口网站，也就是mpa，对象格式的每个键，如home,about,contact是每个入口文件chunk的名字，字符串和数组没有键，它也有一个chunk，名字默认为【main】
@@ -58,6 +94,8 @@ module.exports = {
 
   // 打包输出
   output:{
+  	// publicPath: "/assets/", //配合devServer本地Server
+
   	// 最后生成的打包文件所在的目录，是一个绝对值，，如果不指定，表示当前目录。如果文件夹不存在，会自动创建
   	// 这个路径除了这里会用到之外，如：【html插件,file-loader加载器】也会用到
   	path:path.resolve(__dirname,"../dist"),
@@ -65,7 +103,7 @@ module.exports = {
   	// filename中可以使用[name],[id],[hash],[chunkhash][query]五种变量
   	// filename中可以含子文件夹，如如filename: "a/b/c/[id]app.js"
   	// 最后生成的打包文件是 path+ filename
-  	filename:'./static/js/[name].[hash].build.js', 
+  	filename:'./[name].[hash].build.js', 
   	// filename: 'wang.js', // 如果entry是个对象且有多个chunkname，那么这里会报错，但会生成一个wang.js,它的内容是第一个chunk的，建议entry是多个chunk的对象时，不要写固定名字，要带[name]变量
     // filename: '[name]wang.js', // 此处的[name]与entry中的chunk名字对应，象上面entry是字符串和数组时，最后输出的文件名是mainwang.js，entry是对象，最后输出的文件名是 homewang.js,aboutwang.js,ccontact123wang.js
     // filename: '[id]wang.js', //id从0,1这么增长的，象上面会生成0wang.js,1wang.js,2wang.js三个文件
@@ -94,9 +132,12 @@ module.exports = {
   			loader:'vue-loader',
   			options: {
   				// 把vue组件的style样式提取到公共的文件
-  				extractCSS: function(){
-                   return extractLESS
-                }
+  				loaders: {
+		            css: ExtractTextPlugin.extract({
+		              use: 'css-loader',
+		              fallback: 'vue-style-loader' //这是vue-loader的依赖，所以如果使用npm3，则不需要显式安装。
+		            })
+		        }
   			}
   		},{ // 对图片进行base64编码
 	        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -154,6 +195,8 @@ module.exports = {
   	// 扩展名为.js,.vue,.json的可以忽略，如 import App from './app'，先在当前目录中找app.js，没有再找app.vue，没找到，再找.json，如果还没找到，报错
   	// 寻找顺序从左到右
   	extensions:['.js', '.vue', '.css', '.json'], 
+  	//查找module的话从这里开始查找;
+    modules: [path.resolve(__dirname, "src"), "node_modules"], //绝对路径;
   	alias:{
   		// 抽空可以了解一下vue官网上几种vue文件的格式
   		'vue$': 'vue/dist/vue.esm.js', // 这是一个正则的写法，表示以vue结尾的，如import Vue from 'vue' 表示 import Vue from 'vue/dist/vue.esm.js'
@@ -165,15 +208,34 @@ module.exports = {
   
   // 插件
   plugins:[
-  	new HtmlWebpackPlugin(HtmlWebpackPluginConfig),
   	new UglifyjsWebpackPlugin(),
     new webpack.BannerPlugin({banner:"狼行千里吃肉，狗行千里吃屎！活鱼逆流而上，死鱼随波逐流"}),
-    new ExtractTextPlugin('./static/css/[name][hash:10].css'),
-    
+    new ExtractTextPlugin('./style/[name][hash:10].css'),
+    new webpack.optimize.SplitChunksPlugin({ //抽离公共文件进行分类打包
+	    cacheGroups: {
+		    commons: {
+		        name: "common",
+		        chunks: "initial",
+		        minChunks: 2
+		    },
+		    components:{
+		    	name: "components",
+		        chunks: "initial",
+		        minChunks: 2
+		    }
+		}
+	}),
+	new CopyWebpackPlugin([
+		{
+	        from: path.resolve(__dirname, '../static'),
+	        to: path.resolve(__dirname, '../dist/static'),
+	        ignore: ['.*']
+	    }
+	]),
     // 针对webpack4打的补丁
     new VueLouterPlugin()
     
-  ],
+  ].concat(moduleIndex),
 
   // 开发服务器
   devServer:{
@@ -184,7 +246,7 @@ module.exports = {
   	index:'home.html', // 与HtmlWebpackPlugin中配置filename一样
   	inline:true, // 默认为true, 意思是，在打包时会注入一段代码到最后的js文件中，用来监视页面的改动而自动刷新页面,当为false时，网页自动刷新的模式是iframe，也就是将模板页放在一个frame中
     hot:false, // 热更新
-    compress:true//压缩
+    compress:false//压缩
     // 它与output.publicPath的值应该是一样的，值为上面contentBase目录的子目录，是放js,css,图片等资源的文件夹，记得打包时，将图片等拷贝或打包到该文件下
   },
 
@@ -200,3 +262,4 @@ module.exports = {
   // 外部
   // External:{}
 }
+
