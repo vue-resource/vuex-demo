@@ -11,5 +11,5 @@ export default {
   },
 
   // 以下为真实环境中的接口级别的应用
-  [ACT.LOGIN.hump]: createAction(ACT.LOGIN.upper, API[ACT.LOGIN.hump])
+  [ACT.LOGIN.hump]: createAction(ACT.LOGIN.upper, API[ACT.LOGIN.upper])
 }

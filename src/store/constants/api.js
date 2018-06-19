@@ -1,7 +1,9 @@
 /** 这里主要封装一些接口请求路径信息  */
 import * as ACT from './actions'
 
-window.config.context = 'http://cms.biyao.com'
+window.config = {
+  context : 'http://cms.biyao.com'
+}
 
 const getUrl = url => window.config.context+'/'+url
 

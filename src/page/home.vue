@@ -2,7 +2,7 @@
 	<div>
 		<span class="color-primary">CSS4,预见未来</span>
 		<div>{{rate}}</div>
-		<el-button type="primary" size="small" @click="add(10)">增加s</el-button>
+		<el-button type="primary" size="small" @click="add(10)">增加</el-button>
 		<el-button type="success" size="small" @click="sub(11)">减少</el-button>
 		<el-button type="plain" size="small" round @click="showDel">展示详情</el-button>
 	</div>

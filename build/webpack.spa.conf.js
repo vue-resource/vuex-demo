@@ -190,7 +190,7 @@ module.exports = {
   devServer:{
   	contentBase:path.join(__dirname,"../dist"), //网站的根目录为 根目录/dist ，如果没有指定，使用process.cwd()函数取当前工作目录，工作目录>npm run dev
   	host:"192.168.97.230", //如果指定的host，这样同局域网的电脑或手机可以访问该网站,host的值在dos下使用ipconfig获取 
-  	port:80,
+  	port:8080,
   	open:false,
   	index:'home.html', // 与HtmlWebpackPlugin中配置filename一样
   	inline:true, // 默认为true, 意思是，在打包时会注入一段代码到最后的js文件中，用来监视页面的改动而自动刷新页面,当为false时，网页自动刷新的模式是iframe，也就是将模板页放在一个frame中

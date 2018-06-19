@@ -29,9 +29,15 @@ module.exports = {
     'no-new':'off',
     'eol-last':'off',
     'no-console': 'off',
-    'key-spacing': 'error', //在键值前保留空格
+    "key-spacing": [0, { "beforeColon": false, "afterColon": true }],//对象字面量中冒号的前后空格
     'indent': [ 'error', 2 ], // 2个空格缩进
     'quotes': [ 'error', 'single' ], //单引号
-    'no-unused-vars': 'error' //关闭变量定义了未使用
+    'no-unused-vars': 'error', //关闭变量定义了未使用
+    'comma-dangle': 'off', //对象字面量项尾不能有逗号
+    "no-trailing-spaces": 'off', //一行结束后面不要有空格
+    "spaced-comment": 'off',//注释风格要不要有空格什么的
+    'semi': 'off', //语句强制分号结尾
+    "space-before-blocks": 'off',//不以新行开始的块{前面要不要有空格
+    "space-infix-ops": 'off',//中缀操作符周围要不要有空格
   }
 }
